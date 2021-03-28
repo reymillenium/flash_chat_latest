@@ -10,8 +10,8 @@ import 'package:flutter/material.dart';
 // Utilities:
 import 'package:flash_chat_latest/utilities/constants.dart';
 
-class UserInput extends StatelessWidget {
-  const UserInput({
+class PasswordInput extends StatelessWidget {
+  const PasswordInput({
     Key key,
     @required this.hintText,
     this.onChanged,
@@ -23,6 +23,9 @@ class UserInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      obscureText: true,
+      obscuringCharacter: '+',
+      textAlign: TextAlign.center,
       onChanged: (value) {
         //Do something with the user input.
         onChanged(value);

@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 // Components:
 import 'package:flash_chat_latest/components/auth_button.dart';
-import 'package:flash_chat_latest/components/user_input.dart';
+import 'package:flash_chat_latest/components/text_input.dart';
+import 'package:flash_chat_latest/components/password_input.dart';
 
 // Helpers:
 
@@ -42,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             // User Input: Email
-            UserInput(
+            TextInput(
               hintText: 'Enter your email',
             ),
 
@@ -51,7 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
 
             // User Input: password
-            UserInput(
+            PasswordInput(
               hintText: 'Enter your password',
             ),
 
@@ -64,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
               tag: 'login_button',
               child: AuthButton(
                 color: Colors.lightBlueAccent,
-                onPressed: null,
+                onPressed: () {},
                 label: 'Log in',
               ),
             )

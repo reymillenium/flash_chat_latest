@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 
 // Components:
 import 'package:flash_chat_latest/components/auth_button.dart';
-import 'package:flash_chat_latest/components/user_input.dart';
+import 'package:flash_chat_latest/components/text_input.dart';
+import 'package:flash_chat_latest/components/password_input.dart';
 
 // Helpers:
 
@@ -18,6 +19,9 @@ class RegistrationScreen extends StatefulWidget {
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
+
+String email;
+String password;
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
@@ -42,8 +46,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
 
             // User Input: Email
-            UserInput(
+            TextInput(
               hintText: 'Enter your email',
+              onChanged: (value) {
+                email = value;
+              },
             ),
 
             SizedBox(
@@ -51,8 +58,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
 
             // User Input: Password
-            UserInput(
+            PasswordInput(
               hintText: 'Enter your password',
+              onChanged: (value) {
+                password = value;
+              },
             ),
 
             SizedBox(
@@ -64,7 +74,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               tag: 'register_button',
               child: AuthButton(
                 color: Colors.blueAccent,
-                onPressed: null,
+                onPressed: () {
+                  print(email);
+                  print(password);
+                },
                 label: 'Register',
               ),
             ),

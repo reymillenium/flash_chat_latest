@@ -1,6 +1,6 @@
 ![Rey Millenium Banner](https://github.com/reymillenium/images/blob/master/reymillenium_banner_800x200.png)
 
-# Flash Chat
+# Flash Chat ⚡
 
 This is a chat app using Flutter. It is a multi screen app with a simple functionality but full-on custom styling.
 

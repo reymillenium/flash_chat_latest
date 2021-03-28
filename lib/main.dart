@@ -1,5 +1,6 @@
 // Packages:
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // Screens:
 import 'package:flash_chat_latest/screens/welcome_screen.dart';
@@ -14,11 +15,13 @@ import 'package:flash_chat_latest/screens/chat_screen.dart';
 // Utilities:
 import 'package:flash_chat_latest/utilities/constants.dart';
 
-void main() {
-  runApp(FlashChatUpdated());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(FlashChatLatest());
 }
 
-class FlashChatUpdated extends StatelessWidget {
+class FlashChatLatest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

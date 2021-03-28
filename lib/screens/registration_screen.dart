@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // Components:
 import 'package:flash_chat_latest/components/auth_button.dart';
 import 'package:flash_chat_latest/components/text_input.dart';
+import 'package:flash_chat_latest/components/email_input.dart';
 import 'package:flash_chat_latest/components/password_input.dart';
 
 // Helpers:
@@ -45,8 +46,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 48.0,
             ),
 
-            // User Input: Email
-            TextInput(
+            // Email Input:
+            EmailInput(
               hintText: 'Enter your email',
               onChanged: (value) {
                 email = value;
@@ -57,7 +58,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               height: 8.0,
             ),
 
-            // User Input: Password
+            // Password Input:
             PasswordInput(
               hintText: 'Enter your password',
               onChanged: (value) {

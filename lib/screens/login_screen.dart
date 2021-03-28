@@ -21,6 +21,9 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  String email;
+  String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,6 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
             // User Input: Email
             TextInput(
               hintText: 'Enter your email',
+              onChanged: (value) {
+                email = value;
+              },
             ),
 
             SizedBox(
@@ -54,6 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
             // User Input: password
             PasswordInput(
               hintText: 'Enter your password',
+              onChanged: (value) {
+                password = value;
+              },
             ),
 
             SizedBox(

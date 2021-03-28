@@ -20,10 +20,10 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-String email;
-String password;
-
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  String email;
+  String password;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

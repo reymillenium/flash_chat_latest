@@ -1,16 +1,19 @@
-# flash_chat_latest
+![Rey Millenium Banner](https://github.com/reymillenium/images/blob/master/reymillenium_banner_800x200.png)
 
-A new Flutter application.
+# Flash Chat
 
-## Getting Started
+This is a chat app using Flutter. It is a multi screen app with a simple functionality but full-on custom styling.
 
-This project is a starting point for a Flutter application.
+## Screen Shots
 
-A few resources to get you started if this is your first Flutter project:
+### Login page
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### Registration page
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Chat screen
+
+### Welcome screen
+
+***
+## Contact
+Created by [Reinier Garcia](https://reiniergarcia.dev/) - feel free to contact me!

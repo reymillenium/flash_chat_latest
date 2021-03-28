@@ -24,7 +24,7 @@ class PasswordInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       obscureText: true,
-      obscuringCharacter: '+',
+      obscuringCharacter: '●',
       textAlign: TextAlign.center,
       onChanged: (value) {
         //Do something with the user input.

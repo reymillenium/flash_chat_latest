@@ -1,7 +1,9 @@
 // Packages:
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // Screens:
+import 'package:flash_chat_latest/screens/chat_screen.dart';
 
 // Components:
 import 'package:flash_chat_latest/components/auth_button.dart';
@@ -10,6 +12,7 @@ import 'package:flash_chat_latest/components/email_input.dart';
 import 'package:flash_chat_latest/components/password_input.dart';
 
 // Helpers:
+import 'package:flash_chat_latest/helpers/auth.dart';
 
 // Utilities:
 import 'package:flash_chat_latest/utilities/constants.dart';
@@ -22,6 +25,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _auth = FirebaseAuth.instance;
+  final authHandler = Auth();
   String email;
   String password;
 
@@ -75,7 +80,22 @@ class _LoginScreenState extends State<LoginScreen> {
               tag: 'login_button',
               child: AuthButton(
                 color: Colors.lightBlueAccent,
-                onPressed: () {},
+                onPressed: () async {
+                  // try {
+                  //   UserCredential signInResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
+                  //   final User user = signInResult.user;
+                  //
+                  //   if (user != null) {
+                  //     Navigator.pushNamed(context, ChatScreen.id);
+                  //   }
+                  // } catch (e) {
+                  //   print(e);
+                  // }
+
+                  authHandler.handleSignInEmail(email, password).then((User user) {
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }).catchError((e) => print(e));
+                },
                 label: 'Log in',
               ),
             )

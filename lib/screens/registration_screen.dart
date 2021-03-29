@@ -12,6 +12,7 @@ import 'package:flash_chat_latest/components/email_input.dart';
 import 'package:flash_chat_latest/components/password_input.dart';
 
 // Helpers:
+import 'package:flash_chat_latest/helpers/auth.dart';
 
 // Utilities:
 import 'package:flash_chat_latest/utilities/constants.dart';
@@ -24,7 +25,8 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final _auth = FirebaseAuth.instance;
+  // final _auth = FirebaseAuth.instance;
+  final authHelper = Auth();
   String email;
   String password;
 
@@ -79,16 +81,18 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               child: AuthButton(
                 color: Colors.blueAccent,
                 onPressed: () async {
-                  // print(email);
-                  // print(password);
-                  try {
-                    final newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-                    if (newUser != null) {
-                      Navigator.pushNamed(context, ChatScreen.id);
-                    }
-                  } catch (e) {
-                    print(e);
-                  }
+                  // try {
+                  //   final newUser = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+                  //   if (newUser != null) {
+                  //     Navigator.pushNamed(context, ChatScreen.id);
+                  //   }
+                  // } catch (e) {
+                  //   print(e);
+                  // }
+
+                  authHelper.handleSignUp(email, password).then((User user) {
+                    Navigator.pushNamed(context, ChatScreen.id);
+                  }).catchError((e) => print(e));
                 },
                 label: 'Register',
               ),

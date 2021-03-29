@@ -43,4 +43,8 @@ class Auth {
 
     return user;
   }
+
+  void handleSignOut() {
+    _auth.signOut();
+  }
 }

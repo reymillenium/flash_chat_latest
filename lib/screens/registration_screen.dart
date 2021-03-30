@@ -107,7 +107,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       setState(() {
                         _saving = false;
                       });
-                      print(e);
+                      authHelper.showToastError(e.message, context);
                     });
                   },
                   label: 'Register',

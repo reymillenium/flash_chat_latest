@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 // Screens:
 import 'package:flash_chat_latest/screens/chat_screen.dart';
@@ -88,18 +87,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     setState(() {
                       _saving = true;
                     });
-
-                    // try {
-                    //   UserCredential signInResult = await _auth.signInWithEmailAndPassword(email: email, password: password);
-                    //   final User user = signInResult.user;
-                    //
-                    //   if (user != null) {
-                    //     Navigator.pushNamed(context, ChatScreen.id);
-                    //   }
-                    // } catch (e) {
-                    //   print(e);
-                    // }
-
                     authHelper.handleSignInEmail(email, password).then((User user) {
                       setState(() {
                         _saving = false;

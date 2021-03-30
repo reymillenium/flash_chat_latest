@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 // Screens:
 import 'package:flash_chat_latest/screens/welcome_screen.dart';
@@ -60,5 +61,19 @@ class Auth {
 
   void handleSignOut() {
     _auth.signOut();
+  }
+
+  void showToastError(String errorMessage, BuildContext context) {
+    showToast(
+      errorMessage,
+      context: context,
+      animation: StyledToastAnimation.scale,
+      reverseAnimation: StyledToastAnimation.fade,
+      position: StyledToastPosition.center,
+      animDuration: Duration(seconds: 1),
+      duration: Duration(seconds: 4),
+      curve: Curves.elasticOut,
+      reverseCurve: Curves.linear,
+    );
   }
 }

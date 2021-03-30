@@ -37,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: ModalProgressHUD(
+        inAsyncCall: _saving,
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
@@ -117,8 +118,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ],
           ),
         ),
-        inAsyncCall: _saving,
-        // color: Colors.red,
       ),
     );
   }

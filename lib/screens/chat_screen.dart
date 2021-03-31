@@ -47,6 +47,16 @@ class _ChatScreenState extends State<ChatScreen> {
   //   }
   // }
 
+  // void getMessages() async {
+  //   QuerySnapshot messagesSnapshot = await _firestore.collection('messages').get();
+  //   List<QueryDocumentSnapshot> messagesDocuments = messagesSnapshot.docs;
+  //   messagesDocuments.forEach((messageDocument) {
+  //     Map<String, dynamic> message = messageDocument.data();
+  //     // print(message);
+  //     print(message['text']);
+  //   });
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +98,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       Map<String, dynamic> data = {'text': messageText, 'sender': authHelper.loggedInUser.email};
                       await _firestore.collection('messages').add(data);
                       _controller.clear();
+                      // getMessages();
                     },
                     child: Text(
                       'Send',

@@ -47,15 +47,29 @@ class _ChatScreenState extends State<ChatScreen> {
   //   }
   // }
 
-  // void getMessages() async {
-  //   QuerySnapshot messagesSnapshot = await _firestore.collection('messages').get();
-  //   List<QueryDocumentSnapshot> messagesDocuments = messagesSnapshot.docs;
-  //   messagesDocuments.forEach((messageDocument) {
-  //     Map<String, dynamic> message = messageDocument.data();
-  //     // print(message);
-  //     print(message['text']);
-  //   });
-  // }
+  void getMessages() async {
+    // QuerySnapshot messagesSnapshot = await _firestore.collection('messages').get();
+    // List<QueryDocumentSnapshot> messagesDocuments = messagesSnapshot.docs;
+    // messagesDocuments.forEach((messageDocument) {
+    //   Map<String, dynamic> message = messageDocument.data();
+    //   print(message['text']);
+    // });
+    //
+    // for (var messageDocument in messagesDocuments) {
+    //   Map<String, dynamic> message = messageDocument.data();
+    //   // print(message);
+    //   print(message['text']);
+    // }
+  }
+
+  void messagesStream() async {
+    await for (var messageSnapshot in _firestore.collection('messages').orderBy('created', descending: true).snapshots()) {
+      for (var message in messageSnapshot.docs) {
+        // print(message.data());
+        print(message.data());
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,8 +80,9 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                authHelper.handleSignOut();
-                Navigator.pushNamed(context, LoginScreen.id);
+                // authHelper.handleSignOut();
+                // Navigator.pushNamed(context, LoginScreen.id);
+                messagesStream();
               }),
         ],
         title: Text('⚡️Chat'),
@@ -95,10 +110,17 @@ class _ChatScreenState extends State<ChatScreen> {
                   // FlatButton(
                   TextButton(
                     onPressed: () async {
-                      Map<String, dynamic> data = {'text': messageText, 'sender': authHelper.loggedInUser.email};
+                      Map<String, dynamic> data = {
+                        'text': messageText,
+                        'sender': authHelper.loggedInUser.email,
+                        'created_at': FieldValue.serverTimestamp(),
+                        'updated_at': FieldValue.serverTimestamp(),
+                      };
                       await _firestore.collection('messages').add(data);
+
                       _controller.clear();
                       // getMessages();
+                      // messagesStream();
                     },
                     child: Text(
                       'Send',

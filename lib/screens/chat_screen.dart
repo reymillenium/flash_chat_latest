@@ -1,7 +1,7 @@
 // Packages:
-import 'package:flash_chat_latest/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:bubble/bubble.dart';
 
 // Screens:
 
@@ -93,6 +93,52 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
+              builder: (context, asyncSnapshot) {
+                if (!asyncSnapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlueAccent,
+                    ),
+                  );
+                } else if (asyncSnapshot.hasData) {
+                  final messagesDocuments = asyncSnapshot.data.docs;
+
+                  List<Widget> messageWidgets = [];
+                  for (var messageDocument in messagesDocuments) {
+                    final messageText = messageDocument.data()['text'];
+                    final messageSender = messageDocument.data()['sender'];
+
+                    Widget messageWidget;
+                    if (messageSender == authHelper.loggedInUser.email) {
+                      messageWidget = Bubble(
+                        margin: BubbleEdges.only(top: 10),
+                        nip: BubbleNip.rightTop,
+                        alignment: Alignment.topRight,
+                        color: Color.fromRGBO(225, 255, 199, 1.0),
+                        child: Text(messageText, textAlign: TextAlign.right),
+                      );
+                    } else {
+                      messageWidget = Bubble(
+                        margin: BubbleEdges.only(top: 10),
+                        nip: BubbleNip.leftTop,
+                        alignment: Alignment.topLeft,
+                        child: Text(messageText),
+                      );
+                    }
+
+                    messageWidgets.add(messageWidget);
+                  }
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: messageWidgets,
+                  );
+                }
+                return CircularProgressIndicator();
+              },
+            ),
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(

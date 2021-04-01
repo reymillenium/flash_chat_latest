@@ -24,6 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   // final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   final authHelper = Auth();
+
   // User loggedInUser;
   String messageText;
   final TextEditingController _controller = new TextEditingController();
@@ -74,6 +75,8 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFFFAF6CF),
+      //FAF6CF
       appBar: AppBar(
         leading: null,
         actions: <Widget>[
@@ -93,51 +96,67 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
-              builder: (context, asyncSnapshot) {
-                if (!asyncSnapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.lightBlueAccent,
-                    ),
-                  );
-                } else if (asyncSnapshot.hasData) {
-                  final messagesDocuments = asyncSnapshot.data.docs;
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: StreamBuilder<QuerySnapshot>(
+                stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
+                builder: (context, asyncSnapshot) {
+                  if (!asyncSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.lightBlueAccent,
+                      ),
+                    );
+                  } else if (asyncSnapshot.hasData) {
+                    final messagesDocuments = asyncSnapshot.data.docs;
 
-                  List<Widget> messageWidgets = [];
-                  for (var messageDocument in messagesDocuments) {
-                    final messageText = messageDocument.data()['text'];
-                    final messageSender = messageDocument.data()['sender'];
+                    List<Widget> messageWidgets = [];
+                    for (var messageDocument in messagesDocuments) {
+                      final messageText = messageDocument.data()['text'];
+                      final messageSender = messageDocument.data()['sender'];
 
-                    Widget messageWidget;
-                    if (messageSender == authHelper.loggedInUser.email) {
-                      messageWidget = Bubble(
-                        margin: BubbleEdges.only(top: 10),
-                        nip: BubbleNip.rightTop,
-                        alignment: Alignment.topRight,
-                        color: Color.fromRGBO(225, 255, 199, 1.0),
-                        child: Text(messageText, textAlign: TextAlign.right),
-                      );
-                    } else {
-                      messageWidget = Bubble(
-                        margin: BubbleEdges.only(top: 10),
-                        nip: BubbleNip.leftTop,
-                        alignment: Alignment.topLeft,
-                        child: Text(messageText),
-                      );
+                      Widget messageWidget;
+                      if (messageSender == authHelper.loggedInUser.email) {
+                        messageWidget = Bubble(
+                          margin: BubbleEdges.only(top: 10),
+                          elevation: 1,
+                          alignment: Alignment.topRight,
+                          nip: BubbleNip.rightBottom,
+                          color: Color.fromRGBO(225, 255, 199, 1.0),
+                          child: Text(messageText, textAlign: TextAlign.right),
+                        );
+                      } else {
+                        messageWidget = Bubble(
+                          margin: BubbleEdges.only(top: 10),
+                          elevation: 1,
+                          alignment: Alignment.topLeft,
+                          nip: BubbleNip.leftTop,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                messageSender,
+                                style: TextStyle(color: Colors.red.shade200),
+                              ),
+                              Text(
+                                messageText,
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+
+                      messageWidgets.add(messageWidget);
                     }
-
-                    messageWidgets.add(messageWidget);
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: messageWidgets,
+                    );
                   }
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: messageWidgets,
-                  );
-                }
-                return CircularProgressIndicator();
-              },
+                  return CircularProgressIndicator();
+                },
+              ),
             ),
             Container(
               decoration: kMessageContainerDecoration,

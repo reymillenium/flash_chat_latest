@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bubble/bubble.dart';
 
 // Screens:
+import 'package:flash_chat_latest/screens/login_screen.dart';
 
 // Components:
 
 // Helpers:
 import 'package:flash_chat_latest/helpers/auth.dart';
+import 'package:flash_chat_latest/helpers/messages_helper.dart';
 
 // Utilities:
 import 'package:flash_chat_latest/utilities/constants.dart';
@@ -21,9 +23,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  // final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
   final authHelper = Auth();
+  final messagesHelper = MessagesHelper();
 
   // User loggedInUser;
   String messageText;
@@ -83,9 +85,8 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
               icon: Icon(Icons.close),
               onPressed: () {
-                // authHelper.handleSignOut();
-                // Navigator.pushNamed(context, LoginScreen.id);
-                messagesStream();
+                authHelper.handleSignOut();
+                Navigator.pushNamed(context, LoginScreen.id);
               }),
         ],
         title: Text('⚡️Chat'),
@@ -112,40 +113,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                     List<Widget> messageWidgets = [];
                     for (var messageDocument in messagesDocuments) {
-                      final messageText = messageDocument.data()['text'];
-                      final messageSender = messageDocument.data()['sender'];
-
-                      Widget messageWidget;
-                      if (messageSender == authHelper.loggedInUser.email) {
-                        messageWidget = Bubble(
-                          margin: BubbleEdges.only(top: 10),
-                          elevation: 1,
-                          alignment: Alignment.topRight,
-                          nip: BubbleNip.rightBottom,
-                          color: Color.fromRGBO(225, 255, 199, 1.0),
-                          child: Text(messageText, textAlign: TextAlign.right),
-                        );
-                      } else {
-                        messageWidget = Bubble(
-                          margin: BubbleEdges.only(top: 10),
-                          elevation: 1,
-                          alignment: Alignment.topLeft,
-                          nip: BubbleNip.leftTop,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                messageSender,
-                                style: TextStyle(color: Colors.red.shade200),
-                              ),
-                              Text(
-                                messageText,
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-
+                      Widget messageWidget = messagesHelper.createMessageWidget(messageDocument);
                       messageWidgets.add(messageWidget);
                     }
                     return Column(
@@ -175,17 +143,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   // FlatButton(
                   TextButton(
                     onPressed: () async {
-                      Map<String, dynamic> data = {
-                        'text': messageText,
-                        'sender': authHelper.loggedInUser.email,
-                        'created_at': FieldValue.serverTimestamp(),
-                        'updated_at': FieldValue.serverTimestamp(),
-                      };
+                      Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
                       await _firestore.collection('messages').add(data);
-
                       _controller.clear();
-                      // getMessages();
-                      // messagesStream();
                     },
                     child: Text(
                       'Send',

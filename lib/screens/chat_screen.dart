@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:bubble/bubble.dart';
+import 'dart:async'; // Allows to use Timer
 
 // Screens:
 import 'package:flash_chat_latest/screens/login_screen.dart';
@@ -29,7 +30,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   // User loggedInUser;
   String messageText;
-  final TextEditingController _controller = new TextEditingController();
+  final TextEditingController _messageInputController = new TextEditingController();
+  final _listViewScrollController = ScrollController();
 
   @override
   void initState() {
@@ -74,8 +76,33 @@ class _ChatScreenState extends State<ChatScreen> {
     }
   }
 
+  void scrollListViewSmoothly() {
+    _listViewScrollController.animateTo(
+      _listViewScrollController.position.maxScrollExtent,
+      // duration: Duration(seconds: 1),
+      duration: Duration(milliseconds: 500),
+      // curve: Curves.fastOutSlowIn,
+      curve: Curves.easeOut,
+    );
+  }
+
+  void scrollListView() {
+    _listViewScrollController.jumpTo(_listViewScrollController.position.maxScrollExtent);
+  }
+
   @override
   Widget build(BuildContext context) {
+    // After 1 second, it takes you to the bottom of the ListView
+    Timer(
+      Duration(seconds: 1),
+      // () => _listViewScrollController.jumpTo(_listViewScrollController.position.maxScrollExtent),
+      () => _listViewScrollController.animateTo(
+        _listViewScrollController.position.maxScrollExtent,
+        duration: Duration(seconds: 1),
+        curve: Curves.fastOutSlowIn,
+      ),
+    );
+
     return Scaffold(
       backgroundColor: Color(0xFFFAF6CF),
       //FAF6CF
@@ -97,35 +124,40 @@ class _ChatScreenState extends State<ChatScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: StreamBuilder<QuerySnapshot>(
-                stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
-                builder: (context, asyncSnapshot) {
-                  if (!asyncSnapshot.hasData) {
-                    return Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.lightBlueAccent,
-                      ),
-                    );
-                  } else if (asyncSnapshot.hasData) {
-                    final messagesDocuments = asyncSnapshot.data.docs;
+            StreamBuilder<QuerySnapshot>(
+              stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
+              builder: (context, asyncSnapshot) {
+                if (!asyncSnapshot.hasData) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.lightBlueAccent,
+                    ),
+                  );
+                } else if (asyncSnapshot.hasData) {
+                  final messagesDocuments = asyncSnapshot.data.docs;
 
-                    List<Widget> messageWidgets = [];
-                    for (var messageDocument in messagesDocuments) {
-                      Widget messageWidget = messagesHelper.createMessageWidget(messageDocument);
-                      messageWidgets.add(messageWidget);
-                    }
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: messageWidgets,
-                    );
+                  List<Widget> messageWidgets = [];
+                  for (var messageDocument in messagesDocuments) {
+                    Widget messageWidget = messagesHelper.createMessageWidget(messageDocument);
+                    messageWidgets.add(messageWidget);
                   }
-                  return CircularProgressIndicator();
-                },
-              ),
+                  return Expanded(
+                    child: ListView(
+                      controller: _listViewScrollController,
+                      reverse: false,
+                      shrinkWrap: false,
+                      padding: const EdgeInsets.all(12.0),
+                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      // crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: messageWidgets,
+                    ),
+                  );
+                }
+                return CircularProgressIndicator();
+              },
             ),
+
+            // Text input and Send button:
             Container(
               decoration: kMessageContainerDecoration,
               child: Row(
@@ -133,7 +165,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
-                      controller: _controller,
+                      controller: _messageInputController,
                       onChanged: (value) {
                         messageText = value;
                       },
@@ -145,7 +177,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     onPressed: () async {
                       Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
                       await _firestore.collection('messages').add(data);
-                      _controller.clear();
+                      _messageInputController.clear();
+                      // scrollListView();
+                      scrollListViewSmoothly();
                     },
                     child: Text(
                       'Send',

@@ -31,9 +31,9 @@ class MessagesHelper {
 
   List<Widget> createMessageWidgets(List<QueryDocumentSnapshot> messagesDocuments) {
     List<Widget> messageWidgets = [];
-    print('messagesDocuments.length = ${messagesDocuments.length}');
+    // print('messagesDocuments.length = ${messagesDocuments.length}');
     // for (var messageDocument in messagesDocuments) {
-    //   Widget messageWidget = createMessageWidget(messageDocument);
+    //   Widget messageWidget = createMessageWidget(messageDocument, false);
     //   messageWidgets.add(messageWidget);
     // }
     // print('messagesDocuments = ${messagesDocuments}');
@@ -41,25 +41,19 @@ class MessagesHelper {
     for (int i = 0; i < messagesDocuments.length; i++) {
       bool isCloseToNext = false;
       QueryDocumentSnapshot currentMessageDocument = messagesDocuments[i];
-      // print(currentMessageDocument.data());
       String currentMessageSender = currentMessageDocument.data()['sender'];
-      DateTime currentMessageDate = currentMessageDocument.data()['created_at'].toDate();
+      // DateTime currentMessageDate = currentMessageDocument.data()['created_at'].toDate();
+      DateTime currentMessageDate = currentMessageDocument.data()['created_at'] == null ? DateTime.now() : currentMessageDocument.data()['created_at'].toDate();
 
-      if (currentMessageDocument.data()["created_at"] == null) {
-        print('ERROR');
-      }
       if (i < messagesDocuments.length - 1) {
         QueryDocumentSnapshot nextMessageDocument = messagesDocuments[i + 1];
         String nextMessageSender = nextMessageDocument.data()['sender'];
-        DateTime nextMessageDate = nextMessageDocument.data()['created_at'].toDate();
-        if ((currentMessageSender == nextMessageSender) && (nextMessageDate.difference(currentMessageDate).inMinutes <= 1)) {
-          // print('difference: ${nextMessageDate.difference(currentMessageDate).inMinutes}');
-          //
+        // DateTime nextMessageDate = nextMessageDocument.data()['created_at'].toDate();
+        DateTime nextMessageDate = nextMessageDocument.data()['created_at'] == null ? DateTime.now() : nextMessageDocument.data()['created_at'].toDate();
+        if ((currentMessageSender == nextMessageSender) && (nextMessageDate.difference(currentMessageDate).inSeconds <= 60)) {
           isCloseToNext = true;
         }
-        print('difference: ${nextMessageDate.difference(currentMessageDate).inMinutes}');
       }
-      print(isCloseToNext);
 
       Widget messageWidget = createMessageWidget(currentMessageDocument, isCloseToNext);
       messageWidgets.add(messageWidget);

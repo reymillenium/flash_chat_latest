@@ -31,28 +31,57 @@ class MessagesHelper {
 
   List<Widget> createMessageWidgets(List<QueryDocumentSnapshot> messagesDocuments) {
     List<Widget> messageWidgets = [];
-    for (var messageDocument in messagesDocuments) {
-      Widget messageWidget = createMessageWidget(messageDocument);
+    print('messagesDocuments.length = ${messagesDocuments.length}');
+    // for (var messageDocument in messagesDocuments) {
+    //   Widget messageWidget = createMessageWidget(messageDocument);
+    //   messageWidgets.add(messageWidget);
+    // }
+    // print('messagesDocuments = ${messagesDocuments}');
+
+    for (int i = 0; i < messagesDocuments.length; i++) {
+      bool isCloseToNext = false;
+      QueryDocumentSnapshot currentMessageDocument = messagesDocuments[i];
+      // print(currentMessageDocument.data());
+      String currentMessageSender = currentMessageDocument.data()['sender'];
+      DateTime currentMessageDate = currentMessageDocument.data()['created_at'].toDate();
+
+      if (currentMessageDocument.data()["created_at"] == null) {
+        print('ERROR');
+      }
+      if (i < messagesDocuments.length - 1) {
+        QueryDocumentSnapshot nextMessageDocument = messagesDocuments[i + 1];
+        String nextMessageSender = nextMessageDocument.data()['sender'];
+        DateTime nextMessageDate = nextMessageDocument.data()['created_at'].toDate();
+        if ((currentMessageSender == nextMessageSender) && (nextMessageDate.difference(currentMessageDate).inMinutes <= 1)) {
+          // print('difference: ${nextMessageDate.difference(currentMessageDate).inMinutes}');
+          //
+          isCloseToNext = true;
+        }
+        print('difference: ${nextMessageDate.difference(currentMessageDate).inMinutes}');
+      }
+      print(isCloseToNext);
+
+      Widget messageWidget = createMessageWidget(currentMessageDocument, isCloseToNext);
       messageWidgets.add(messageWidget);
     }
 
     return messageWidgets;
   }
 
-  Widget createMessageWidget(QueryDocumentSnapshot messageDocument) {
+  Widget createMessageWidget(QueryDocumentSnapshot messageDocument, bool isCloseToNext) {
     final messageSender = messageDocument.data()['sender'];
     Widget messageWidget;
 
     if (messageSender == authHelper.loggedInUser.email) {
-      messageWidget = createOurMessageBubble(messageDocument);
+      messageWidget = createOurMessageBubble(messageDocument, isCloseToNext);
     } else {
-      messageWidget = createExternalMessageBubble(messageDocument);
+      messageWidget = createExternalMessageBubble(messageDocument, isCloseToNext);
     }
 
     return messageWidget;
   }
 
-  Bubble createOurMessageBubble(QueryDocumentSnapshot messageDocument) {
+  Bubble createOurMessageBubble(QueryDocumentSnapshot messageDocument, bool isCloseToNext) {
     final messageText = messageDocument.data()['text'];
     RichText richTextDataLabel = createRichTextDataLabel(messageDocument);
 
@@ -60,7 +89,7 @@ class MessagesHelper {
       margin: BubbleEdges.only(top: 10),
       elevation: 1,
       alignment: Alignment.topRight,
-      nip: BubbleNip.rightBottom,
+      nip: (isCloseToNext ? BubbleNip.no : BubbleNip.rightBottom),
       color: Color.fromRGBO(225, 255, 199, 1.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -76,7 +105,7 @@ class MessagesHelper {
     );
   }
 
-  Bubble createExternalMessageBubble(QueryDocumentSnapshot messageDocument) {
+  Bubble createExternalMessageBubble(QueryDocumentSnapshot messageDocument, bool isCloseToNext) {
     final messageText = messageDocument.data()['text'];
     final messageSender = messageDocument.data()['sender'];
     RichText richTextDataLabel = createRichTextDataLabel(messageDocument);
@@ -85,7 +114,7 @@ class MessagesHelper {
       margin: BubbleEdges.only(top: 10),
       elevation: 1,
       alignment: Alignment.topLeft,
-      nip: BubbleNip.leftTop,
+      nip: (isCloseToNext ? BubbleNip.no : BubbleNip.leftTop),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

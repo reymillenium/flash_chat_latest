@@ -136,11 +136,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 } else if (asyncSnapshot.hasData) {
                   final messagesDocuments = asyncSnapshot.data.docs;
 
-                  List<Widget> messageWidgets = [];
-                  for (var messageDocument in messagesDocuments) {
-                    Widget messageWidget = messagesHelper.createMessageWidget(messageDocument);
-                    messageWidgets.add(messageWidget);
-                  }
+                  List<Widget> messageWidgets = messagesHelper.createMessageWidgets(messagesDocuments);
                   return Expanded(
                     child: ListView(
                       controller: _listViewScrollController,

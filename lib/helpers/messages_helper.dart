@@ -29,6 +29,16 @@ class MessagesHelper {
     authHelper.getCurrentUser();
   }
 
+  List<Widget> createMessageWidgets(List<QueryDocumentSnapshot> messagesDocuments) {
+    List<Widget> messageWidgets = [];
+    for (var messageDocument in messagesDocuments) {
+      Widget messageWidget = createMessageWidget(messageDocument);
+      messageWidgets.add(messageWidget);
+    }
+
+    return messageWidgets;
+  }
+
   Widget createMessageWidget(QueryDocumentSnapshot messageDocument) {
     final messageSender = messageDocument.data()['sender'];
     Widget messageWidget;

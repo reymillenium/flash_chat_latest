@@ -165,10 +165,14 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      cursorColor: Colors.blue,
                       controller: _messageInputController,
                       onChanged: (value) {
                         messageText = value;
                       },
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
                       decoration: kMessageTextFieldDecoration,
                     ),
                   ),

@@ -98,109 +98,122 @@ class _ChatScreenState extends State<ChatScreen> {
       // scrollListView();
     });
 
-    return Scaffold(
-      backgroundColor: Color(0xFFFAF6CF),
-      //FAF6CF
-      appBar: AppBar(
-        leading: null,
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                authHelper.handleSignOut();
-                Navigator.pushNamed(context, LoginScreen.id);
-              }),
-        ],
-        title: Text('⚡️Chat'),
-        backgroundColor: Colors.lightBlueAccent,
-      ),
-      body: SafeArea(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            StreamBuilder<QuerySnapshot>(
-              stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
-              builder: (context, asyncSnapshot) {
-                if (!asyncSnapshot.hasData) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.lightBlueAccent,
-                    ),
-                  );
-                } else if (asyncSnapshot.hasData) {
-                  final messagesDocuments = asyncSnapshot.data.docs;
-
-                  List<Widget> messageWidgets = messagesHelper.createMessageWidgets(messagesDocuments);
-                  Timer(Duration(seconds: 1), () {
-                    scrollListViewSmoothly();
-                  });
-                  return Expanded(
-                    child: ListView(
-                      controller: _listViewScrollController,
-                      // reverse: false,
-                      // shrinkWrap: false,
-                      padding: const EdgeInsets.all(12.0),
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      // crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: messageWidgets,
-                    ),
-                  );
-                }
-                scrollListViewSmoothly();
-                return CircularProgressIndicator();
-              },
-            ),
-
-            // Text input and Send button:
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(22)),
-                          color: Colors.white,
+    return Stack(
+      children: <Widget>[
+        Image.asset(
+          "images/telegram_wallpaper_01.jpeg",
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          fit: BoxFit.cover,
+        ),
+        Scaffold(
+          // backgroundColor: Color(0xFFFAF6CF),
+          backgroundColor: Colors.transparent,
+          //FAF6CF
+          appBar: AppBar(
+            leading: null,
+            actions: <Widget>[
+              IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    authHelper.handleSignOut();
+                    Navigator.pushNamed(context, LoginScreen.id);
+                  }),
+            ],
+            title: Text('⚡️Chat'),
+            // backgroundColor: Colors.lightBlueAccent,
+            backgroundColor: Colors.grey,
+            // backgroundColor: Colors.transparent,
+          ),
+          body: SafeArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                StreamBuilder<QuerySnapshot>(
+                  stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
+                  builder: (context, asyncSnapshot) {
+                    if (!asyncSnapshot.hasData) {
+                      return Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.lightBlueAccent,
                         ),
-                        child: TextField(
-                          cursorColor: Colors.blue,
-                          controller: _messageInputController,
-                          onChanged: (value) {
-                            messageText = value;
-                          },
-                          style: TextStyle(
-                            color: Colors.black,
+                      );
+                    } else if (asyncSnapshot.hasData) {
+                      final messagesDocuments = asyncSnapshot.data.docs;
+
+                      List<Widget> messageWidgets = messagesHelper.createMessageWidgets(messagesDocuments);
+                      Timer(Duration(seconds: 1), () {
+                        scrollListViewSmoothly();
+                      });
+                      return Expanded(
+                        child: ListView(
+                          controller: _listViewScrollController,
+                          // reverse: false,
+                          // shrinkWrap: false,
+                          padding: const EdgeInsets.all(12.0),
+                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          // crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: messageWidgets,
+                        ),
+                      );
+                    }
+                    scrollListViewSmoothly();
+                    return CircularProgressIndicator();
+                  },
+                ),
+
+                // Text input and Send button:
+                Container(
+                  decoration: kMessageContainerDecoration,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(22)),
+                              color: Colors.white,
+                            ),
+                            child: TextField(
+                              cursorColor: Colors.blue,
+                              controller: _messageInputController,
+                              onChanged: (value) {
+                                messageText = value;
+                              },
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                              decoration: kMessageTextFieldDecoration,
+                            ),
                           ),
-                          decoration: kMessageTextFieldDecoration,
                         ),
                       ),
-                    ),
+                      // FlatButton(
+                      TextButton(
+                        style: ButtonStyle(),
+                        onPressed: () async {
+                          Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
+                          await _firestore.collection('messages').add(data);
+                          _messageInputController.clear();
+                          // scrollListView();
+                          scrollListViewSmoothly();
+                        },
+                        child: Text(
+                          'Send',
+                          style: kSendButtonTextStyle,
+                        ),
+                      ),
+                    ],
                   ),
-                  // FlatButton(
-                  TextButton(
-                    style: ButtonStyle(),
-                    onPressed: () async {
-                      Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
-                      await _firestore.collection('messages').add(data);
-                      _messageInputController.clear();
-                      // scrollListView();
-                      scrollListViewSmoothly();
-                    },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }

@@ -31,7 +31,6 @@ class MessagesHelper {
 
   List<Widget> createMessageWidgets(List<QueryDocumentSnapshot> messagesDocuments) {
     List<Widget> messageWidgets = [];
-    // print('messagesDocuments.length = ${messagesDocuments.length}');
     // for (var messageDocument in messagesDocuments) {
     //   Widget messageWidget = createMessageWidget(messageDocument, false);
     //   messageWidgets.add(messageWidget);

@@ -125,92 +125,91 @@ class _ChatScreenState extends State<ChatScreen> {
             backgroundColor: Colors.grey,
             // backgroundColor: Colors.transparent,
           ),
-          body: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                StreamBuilder<QuerySnapshot>(
-                  stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
-                  builder: (context, asyncSnapshot) {
-                    if (!asyncSnapshot.hasData) {
-                      return Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.lightBlueAccent,
-                        ),
-                      );
-                    } else if (asyncSnapshot.hasData) {
-                      final messagesDocuments = asyncSnapshot.data.docs;
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              StreamBuilder<QuerySnapshot>(
+                stream: _firestore.collection('messages').orderBy('created_at', descending: false).snapshots(),
+                builder: (context, asyncSnapshot) {
+                  if (!asyncSnapshot.hasData) {
+                    return Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.lightBlueAccent,
+                      ),
+                    );
+                  } else if (asyncSnapshot.hasData) {
+                    final messagesDocuments = asyncSnapshot.data.docs;
 
-                      List<Widget> messageWidgets = messagesHelper.createMessageWidgets(messagesDocuments);
-                      Timer(Duration(seconds: 1), () {
-                        scrollListViewSmoothly();
-                      });
-                      return Expanded(
-                        child: ListView(
-                          controller: _listViewScrollController,
-                          // reverse: false,
-                          // shrinkWrap: false,
-                          padding: const EdgeInsets.all(12.0),
-                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          // crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: messageWidgets,
-                        ),
-                      );
-                    }
-                    scrollListViewSmoothly();
-                    return CircularProgressIndicator();
-                  },
-                ),
+                    List<Widget> messageWidgets = messagesHelper.createMessageWidgets(messagesDocuments);
+                    Timer(Duration(seconds: 1), () {
+                      scrollListViewSmoothly();
+                    });
+                    return Expanded(
+                      child: ListView(
+                        controller: _listViewScrollController,
+                        // reverse: false,
+                        // shrinkWrap: false,
+                        padding: const EdgeInsets.all(12.0),
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: messageWidgets,
+                      ),
+                    );
+                  }
+                  scrollListViewSmoothly();
+                  return CircularProgressIndicator();
+                },
+              ),
 
-                // Text input and Send button:
-                Container(
-                  decoration: kMessageContainerDecoration,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(22)),
-                              color: Colors.white,
+              // Text input and Send button:
+              Container(
+                padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+                decoration: kMessageContainerDecoration,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(22)),
+                            color: Colors.white,
+                          ),
+                          child: TextField(
+                            cursorColor: Colors.blue,
+                            controller: _messageInputController,
+                            onChanged: (value) {
+                              messageText = value;
+                            },
+                            style: TextStyle(
+                              color: Colors.black,
                             ),
-                            child: TextField(
-                              cursorColor: Colors.blue,
-                              controller: _messageInputController,
-                              onChanged: (value) {
-                                messageText = value;
-                              },
-                              style: TextStyle(
-                                color: Colors.black,
-                              ),
-                              decoration: kMessageTextFieldDecoration,
-                            ),
+                            decoration: kMessageTextFieldDecoration,
                           ),
                         ),
                       ),
-                      // FlatButton(
-                      TextButton(
-                        style: ButtonStyle(),
-                        onPressed: () async {
-                          Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
-                          await _firestore.collection('messages').add(data);
-                          _messageInputController.clear();
-                          // scrollListView();
-                          scrollListViewSmoothly();
-                        },
-                        child: Text(
-                          'Send',
-                          style: kSendButtonTextStyle,
-                        ),
+                    ),
+                    // FlatButton(
+                    TextButton(
+                      style: ButtonStyle(),
+                      onPressed: () async {
+                        Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
+                        await _firestore.collection('messages').add(data);
+                        _messageInputController.clear();
+                        // scrollListView();
+                        scrollListViewSmoothly();
+                      },
+                      child: Text(
+                        'Send',
+                        style: kSendButtonTextStyle,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

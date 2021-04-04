@@ -12,6 +12,7 @@ import 'package:flash_chat_latest/screens/login_screen.dart';
 // Helpers:
 import 'package:flash_chat_latest/helpers/auth.dart';
 import 'package:flash_chat_latest/helpers/messages_helper.dart';
+import 'package:flash_chat_latest/helpers/sound_effects_helper.dart';
 
 // Utilities:
 import 'package:flash_chat_latest/utilities/constants.dart';
@@ -27,6 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   final _firestore = FirebaseFirestore.instance;
   final authHelper = Auth();
   final messagesHelper = MessagesHelper();
+  final soundsHelper = SoundEffectsHelper();
 
   // User loggedInUser;
   String messageText;
@@ -196,6 +198,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       style: ButtonStyle(),
                       onPressed: () async {
                         Map<String, dynamic> data = messagesHelper.createMessageData(messageText);
+                        soundsHelper.playSendButtonClick();
                         await _firestore.collection('messages').add(data);
                         _messageInputController.clear();
                         // scrollListView();

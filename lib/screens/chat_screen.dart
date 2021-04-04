@@ -67,14 +67,14 @@ class _ChatScreenState extends State<ChatScreen> {
     // }
   }
 
-  void messagesStream() async {
-    await for (var messageSnapshot in _firestore.collection('messages').orderBy('created', descending: true).snapshots()) {
-      for (var message in messageSnapshot.docs) {
-        // print(message.data());
-        print(message.data());
-      }
-    }
-  }
+  // void messagesStream() async {
+  //   await for (var messageSnapshot in _firestore.collection('messages').orderBy('created', descending: true).snapshots()) {
+  //     for (var message in messageSnapshot.docs) {
+  //       // print(message.data());
+  //       print(message.data());
+  //     }
+  //   }
+  // }
 
   void scrollListViewSmoothly() {
     _listViewScrollController.animateTo(
@@ -93,15 +93,10 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     // After 1 second, it takes you to the bottom of the ListView
-    Timer(
-      Duration(seconds: 1),
-      // () => _listViewScrollController.jumpTo(_listViewScrollController.position.maxScrollExtent),
-      () => _listViewScrollController.animateTo(
-        _listViewScrollController.position.maxScrollExtent,
-        duration: Duration(seconds: 1),
-        curve: Curves.fastOutSlowIn,
-      ),
-    );
+    Timer(Duration(seconds: 1), () {
+      scrollListViewSmoothly();
+      // scrollListView();
+    });
 
     return Scaffold(
       backgroundColor: Color(0xFFFAF6CF),
@@ -137,11 +132,14 @@ class _ChatScreenState extends State<ChatScreen> {
                   final messagesDocuments = asyncSnapshot.data.docs;
 
                   List<Widget> messageWidgets = messagesHelper.createMessageWidgets(messagesDocuments);
+                  Timer(Duration(seconds: 1), () {
+                    scrollListViewSmoothly();
+                  });
                   return Expanded(
                     child: ListView(
                       controller: _listViewScrollController,
-                      reverse: false,
-                      shrinkWrap: false,
+                      // reverse: false,
+                      // shrinkWrap: false,
                       padding: const EdgeInsets.all(12.0),
                       // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       // crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -149,6 +147,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   );
                 }
+                scrollListViewSmoothly();
                 return CircularProgressIndicator();
               },
             ),

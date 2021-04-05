@@ -123,9 +123,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   }),
             ],
             title: Text('⚡️Chat'),
-            // backgroundColor: Colors.lightBlueAccent,
             backgroundColor: Colors.grey,
-            // backgroundColor: Colors.transparent,
           ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -201,7 +199,6 @@ class _ChatScreenState extends State<ChatScreen> {
                         soundsHelper.playSendButtonClick();
                         await _firestore.collection('messages').add(data);
                         _messageInputController.clear();
-                        // scrollListView();
                         scrollListViewSmoothly();
                       },
                       child: Text(

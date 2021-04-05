@@ -20,16 +20,16 @@ This is a chat app using Flutter. It is a multi screen app with a simple functio
 ## Screen Shots
 
 ### Welcome screen
-![Example screenshot](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/welcome_screen.PNG)
+![Welcome screen](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/welcome_screen.PNG)
 
 ### Login page
-![Example screenshot](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/login_screen.PNG)
+![Login page](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/login_screen.PNG)
 
 ### Registration page
-![Example screenshot](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/registration_screen.PNG)
+![Registration page](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/registration_screen.PNG)
 
 ### Chat screen
-![Example screenshot](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/chat_screen.PNG)
+![Chat screen](https://github.com/reymillenium/images/blob/master/my_projects/17_FlashChat/chat_screen.PNG)
 
 
 ***
